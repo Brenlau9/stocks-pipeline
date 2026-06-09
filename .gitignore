@@ -1,0 +1,9 @@
+.env
+.env.*
+.aws/
+.terraform/
+*.tfstate
+*.tfstate.backup
+node_modules/
+__pycache__/
+*.pyc
