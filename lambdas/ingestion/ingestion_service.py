@@ -26,7 +26,13 @@ class IngestionService:
             percent_change = self.calculate_percent_change(open_price, close_price)
             
             if abs(percent_change) > best:
-                winner = ticker
+                best = abs(percent_change)
+                winner = {
+                    "date": str(yesterday),
+                    "ticker": ticker,
+                    "percent_change": round(percent_change, 2),
+                    "close_price": close_price,
+                }
             time.sleep(12)
         
         return winner
