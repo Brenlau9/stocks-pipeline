@@ -49,6 +49,3 @@ def lambda_handler(event, context):
             "Ingestion job failed"
         )
         raise
-
-if __name__ == "__main__":
-    lambda_handler(None, None)
