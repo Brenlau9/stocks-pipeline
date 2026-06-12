@@ -39,6 +39,6 @@ class DynamoDBRepository:
             reverse=True
         )
 
-        logger.info(f"Retrieved recent winners from DynamoDB: {items}")
+        logger.info(f"Retrieved recent winners from DynamoDB: {items[:7]}")
 
         return items[:7]
