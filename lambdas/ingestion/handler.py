@@ -15,7 +15,7 @@ load_dotenv()
 
 def lambda_handler(event, context):
     api_key = os.getenv('MASSIVE_API_KEY')
-    table_name = os.getenv('DYNAMODB_TABLE_NAME', "daily_stock_movers")
+    table_name = os.getenv('DYNAMODB_TABLE_NAME', "daily-stock-movers")
 
     client = StockApiClient(api_key)
     service = IngestionService(client)
