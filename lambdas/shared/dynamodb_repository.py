@@ -1,6 +1,6 @@
 import logging
 from decimal import Decimal
-from typing import Any
+from typing import Any, List
 
 import os
 import boto3
@@ -8,16 +8,9 @@ import boto3
 logger = logging.getLogger(__name__)
 
 class DynamoDBRepository:
-    def __init__(self, table_name: str):
-        region = os.getenv("AWS_REGION", "us-west-2")
-
-        if not region:
-            raise RuntimeError(
-                "AWS_REGION environment variable is not set"
-            )
-    
+    def __init__(self, table_name: str, region: str):
         self.table_name = table_name
-        
+
         self.table = boto3.resource(
             "dynamodb", 
             region_name=region,
@@ -36,3 +29,17 @@ class DynamoDBRepository:
         self.table.put_item(Item=item)
 
         logger.info("Winner saved successfully")
+    
+    def get_recent_winners(self) -> List[dict]:
+        response = self.table.scan()
+
+        items = response.get("Items", [])
+
+        items.sort(
+            key=lambda x: x["date"],
+            reverse=True
+        )
+
+        logger.info(f"Retrieved recent winners from DynamoDB: {items}")
+
+        return items[:7]

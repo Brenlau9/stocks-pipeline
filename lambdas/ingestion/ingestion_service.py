@@ -1,8 +1,8 @@
-from stock_api_client import StockApiClient
+from lambdas.ingestion.stock_api_client import StockApiClient
 import logging
 from datetime import datetime, date, timedelta
 import time
-from constants import WATCHLIST
+from lambdas.ingestion.constants import WATCHLIST
 
 logger = logging.getLogger(__name__)
 

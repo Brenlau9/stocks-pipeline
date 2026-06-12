@@ -3,9 +3,9 @@ import json
 from dotenv import load_dotenv
 import logging
 
-from stock_api_client import StockApiClient
-from ingestion_service import IngestionService
-from dynamodb_repository import DynamoDBRepository
+from lambdas.ingestion.stock_api_client import StockApiClient
+from lambdas.ingestion.ingestion_service import IngestionService
+from lambdas.shared.dynamodb_repository import DynamoDBRepository
 
 
 logging.basicConfig(level=logging.INFO)
@@ -15,11 +15,17 @@ load_dotenv()
 
 def lambda_handler(event, context):
     api_key = os.getenv('MASSIVE_API_KEY')
-    table_name = os.getenv('DYNAMODB_TABLE_NAME', "daily-stock-movers")
+    table_name = os.getenv('DYNAMODB_TABLE_NAME')
+    region = os.getenv("AWS_REGION")
 
+    if not region:
+        raise RuntimeError(
+            "AWS_REGION environment variable is not set"
+        )
+    
     client = StockApiClient(api_key)
     service = IngestionService(client)
-    repository = DynamoDBRepository(table_name)
+    repository = DynamoDBRepository(table_name, region)
 
     logger.info("Starting ingestion")
 
