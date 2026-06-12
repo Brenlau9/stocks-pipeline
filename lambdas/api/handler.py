@@ -28,7 +28,7 @@ def lambda_handler(event, context):
         logger.info("Retrieval complete")
 
         return {
-            "status_code": 200,
+            "statusCode": 200,
             "headers": {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",

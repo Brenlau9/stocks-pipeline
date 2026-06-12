@@ -2,7 +2,6 @@ import logging
 from decimal import Decimal
 from typing import Any, List
 
-import os
 import boto3
 
 logger = logging.getLogger(__name__)
