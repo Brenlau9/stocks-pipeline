@@ -18,7 +18,7 @@ class IngestionService:
         return ((close_price - open_price) / open_price) * 100
 
     def find_most_recent_trading_day(self) -> date:
-        target_date = date.today() - timedelta(days=1)
+        target_date = date.today()
 
         while not self.is_trading_day(target_date):
             logger.info(f"{target_date} is not a trading day. Trying previous day.")
