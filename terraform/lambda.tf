@@ -62,7 +62,7 @@ resource "aws_lambda_function" "ingestion_lambda" {
   filename         = data.archive_file.ingestion_lambda_zip.output_path
   source_code_hash = data.archive_file.ingestion_lambda_zip.output_base64sha256
 
-  timeout = 180
+  timeout = 300
 
   environment {
     variables = {
