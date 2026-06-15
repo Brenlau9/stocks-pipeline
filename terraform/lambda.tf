@@ -15,8 +15,8 @@ data "aws_ssm_parameter" "massive_api_key" {
   with_decryption = false
 }
 
-resource "aws_iam_role" "lambda_role" {
-  name = "stocks-pipeline-lambda-role"
+resource "aws_iam_role" "ingestion_lambda_role" {
+  name = "stocks-ingestion-lambda-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -30,9 +30,24 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
-resource "aws_iam_role_policy" "lambda_policy" {
-  name = "stocks-pipeline-lambda-policy"
-  role = aws_iam_role.lambda_role.id
+resource "aws_iam_role" "api_lambda_role" {
+  name = "stocks-api-lambda-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "ingestion_lambda_policy" {
+  name = "stocks-ingestion-lambda-policy"
+  role = aws_iam_role.ingestion_lambda_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -49,8 +64,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
       {
         Effect = "Allow"
         Action = [
-          "dynamodb:PutItem",
-          "dynamodb:Scan"
+          "dynamodb:PutItem"
         ]
         Resource = aws_dynamodb_table.daily_stock_movers.arn
       },
@@ -65,9 +79,36 @@ resource "aws_iam_role_policy" "lambda_policy" {
   })
 }
 
+resource "aws_iam_role_policy" "api_lambda_policy" {
+  name = "stocks-api-lambda-policy"
+  role = aws_iam_role.api_lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:Scan"
+        ]
+        Resource = aws_dynamodb_table.daily_stock_movers.arn
+      }
+    ]
+  })
+}
+
 resource "aws_lambda_function" "ingestion_lambda" {
   function_name = "stocks-ingestion-lambda"
-  role          = aws_iam_role.lambda_role.arn
+  role          = aws_iam_role.ingestion_lambda_role.arn
   handler       = "ingestion.handler.lambda_handler"
   runtime       = "python3.12"
 
@@ -86,7 +127,7 @@ resource "aws_lambda_function" "ingestion_lambda" {
 
 resource "aws_lambda_function" "api_lambda" {
   function_name = "stocks-api-lambda"
-  role          = aws_iam_role.lambda_role.arn
+  role          = aws_iam_role.api_lambda_role.arn
   handler       = "api.handler.lambda_handler"
   runtime       = "python3.12"
 
