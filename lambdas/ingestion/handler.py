@@ -7,7 +7,15 @@ from ingestion.ingestion_service import IngestionService
 from shared.dynamodb_repository import DynamoDBRepository
 
 
-logging.basicConfig(level=logging.INFO)
+def configure_logging() -> None:
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
+
+    for handler in root_logger.handlers:
+        handler.setLevel(logging.INFO)
+
+
+configure_logging()
 logger = logging.getLogger(__name__)
 
 def lambda_handler(event, context):
