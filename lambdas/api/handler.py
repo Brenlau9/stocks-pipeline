@@ -1,14 +1,12 @@
 import os
 import json
-from dotenv import load_dotenv
 import logging
 from decimal import Decimal
-from lambdas.shared.dynamodb_repository import DynamoDBRepository
+from shared.dynamodb_repository import DynamoDBRepository
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-load_dotenv()
 
 def decimal_default(obj):
     if isinstance(obj, Decimal):
@@ -16,8 +14,8 @@ def decimal_default(obj):
     raise TypeError
 
 def lambda_handler(event, context):
-    table_name = os.getenv('DYNAMODB_TABLE_NAME')
-    region = os.getenv('AWS_REGION')
+    table_name = os.environ["DYNAMODB_TABLE_NAME"]
+    region = os.environ["AWS_REGION"]
     repository = DynamoDBRepository(table_name, region=region)
 
     logger.info("Starting recent winners retrieval")

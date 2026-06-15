@@ -1,12 +1,12 @@
 data "archive_file" "ingestion_lambda_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/../lambdas"
+  source_dir  = "${path.module}/build/ingestion_package"
   output_path = "${path.module}/build/ingestion_lambda.zip"
 }
 
 data "archive_file" "api_lambda_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/../lambdas"
+  source_dir  = "${path.module}/build/api_package"
   output_path = "${path.module}/build/api_lambda.zip"
 }
 
@@ -56,7 +56,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
 resource "aws_lambda_function" "ingestion_lambda" {
   function_name = "stocks-ingestion-lambda"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "lambdas.ingestion.handler.lambda_handler"
+  handler       = "ingestion.handler.lambda_handler"
   runtime       = "python3.12"
 
   filename         = data.archive_file.ingestion_lambda_zip.output_path
@@ -75,7 +75,7 @@ resource "aws_lambda_function" "ingestion_lambda" {
 resource "aws_lambda_function" "api_lambda" {
   function_name = "stocks-api-lambda"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "lambdas.api.handler.lambda_handler"
+  handler       = "api.handler.lambda_handler"
   runtime       = "python3.12"
 
   filename         = data.archive_file.api_lambda_zip.output_path

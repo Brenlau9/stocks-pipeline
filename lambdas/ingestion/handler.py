@@ -1,22 +1,19 @@
 import os
 import json
-from dotenv import load_dotenv
 import logging
 
-from lambdas.ingestion.stock_api_client import StockApiClient
-from lambdas.ingestion.ingestion_service import IngestionService
-from lambdas.shared.dynamodb_repository import DynamoDBRepository
+from ingestion.stock_api_client import StockApiClient
+from ingestion.ingestion_service import IngestionService
+from shared.dynamodb_repository import DynamoDBRepository
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-load_dotenv()
-
 def lambda_handler(event, context):
-    api_key = os.getenv('MASSIVE_API_KEY')
-    table_name = os.getenv('DYNAMODB_TABLE_NAME')
-    region = os.getenv("AWS_REGION")
+    api_key = os.environ["MASSIVE_API_KEY"]
+    table_name = os.environ["DYNAMODB_TABLE_NAME"]
+    region = os.environ["AWS_REGION"]
 
     if not region:
         raise RuntimeError(

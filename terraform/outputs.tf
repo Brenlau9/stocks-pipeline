@@ -21,3 +21,7 @@ output "api_lambda_name" {
 output "api_lambda_arn" {
   value = aws_lambda_function.api_lambda.arn
 }
+
+output "eventbridge_rule_name" {
+  value = aws_cloudwatch_event_rule.daily_ingestion_schedule.name
+}
