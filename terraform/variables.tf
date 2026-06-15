@@ -8,7 +8,7 @@ variable "table_name" {
   default = "daily-stock-movers"
 }
 
-variable "massive_api_key" {
-  type      = string
-  sensitive = true
+variable "massive_api_key_parameter_name" {
+  type    = string
+  default = "/stocks-pipeline/massive-api-key"
 }

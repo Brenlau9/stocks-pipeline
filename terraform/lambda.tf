@@ -10,6 +10,11 @@ data "archive_file" "api_lambda_zip" {
   output_path = "${path.module}/build/api_lambda.zip"
 }
 
+data "aws_ssm_parameter" "massive_api_key" {
+  name            = var.massive_api_key_parameter_name
+  with_decryption = false
+}
+
 resource "aws_iam_role" "lambda_role" {
   name = "stocks-pipeline-lambda-role"
 
@@ -48,6 +53,13 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "dynamodb:Scan"
         ]
         Resource = aws_dynamodb_table.daily_stock_movers.arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter"
+        ]
+        Resource = data.aws_ssm_parameter.massive_api_key.arn
       }
     ]
   })
@@ -66,8 +78,8 @@ resource "aws_lambda_function" "ingestion_lambda" {
 
   environment {
     variables = {
-      MASSIVE_API_KEY     = var.massive_api_key
-      DYNAMODB_TABLE_NAME = aws_dynamodb_table.daily_stock_movers.name
+      MASSIVE_API_KEY_PARAMETER_NAME = var.massive_api_key_parameter_name
+      DYNAMODB_TABLE_NAME            = aws_dynamodb_table.daily_stock_movers.name
     }
   }
 }

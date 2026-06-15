@@ -33,8 +33,11 @@ class IngestionService:
 
         return target_date not in self.market_holidays
 
-    def find_daily_top_mover(self) -> dict:
-        trading_day = self.find_most_recent_trading_day()
+    def find_daily_top_mover(self, trading_day: date | None = None) -> dict:
+        if trading_day is None:
+            trading_day = self.find_most_recent_trading_day()
+        elif not self.is_trading_day(trading_day):
+            raise ValueError(f"{trading_day} is not a trading day")
 
         best = 0
         winner = None
