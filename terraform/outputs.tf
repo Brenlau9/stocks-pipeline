@@ -25,3 +25,11 @@ output "api_lambda_arn" {
 output "eventbridge_rule_name" {
   value = aws_cloudwatch_event_rule.daily_ingestion_schedule.name
 }
+
+output "api_gateway_url" {
+  value = aws_apigatewayv2_api.stocks_api.api_endpoint
+}
+
+output "movers_endpoint_url" {
+  value = "${aws_apigatewayv2_api.stocks_api.api_endpoint}/movers"
+}
