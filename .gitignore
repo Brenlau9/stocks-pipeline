@@ -6,18 +6,43 @@ __pycache__/
 # Environment variables
 .env
 .env.*
+*.local
+frontend/.env
 
 # Terraform
 .terraform/
 *.tfstate
 *.tfstate.*
 terraform.tfvars
+terraform/build/
 
-# Terraform build artifacts
-build/
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
 
-# Node
-node_modules/
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDEs
+.vscode/*
+!.vscode/extensions.json
+.idea/
 
 # macOS
 .DS_Store
+
+# Visual Studio
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Vim
+*.sw?
