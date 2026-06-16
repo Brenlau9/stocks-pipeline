@@ -124,6 +124,25 @@ The Terraform defaults deploy to:
 us-west-2
 ```
 
+## Local Development Setup
+
+Create and activate a virtual environment from the project root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+```
+
+Install runtime dependencies used by the Lambda code:
+
+```bash
+python3 -m pip install -r lambdas/ingestion/requirements.txt
+```
+
+The API Lambda currently has no third-party runtime dependencies. `boto3` is
+available in the AWS Lambda Python runtime.
+
 ## Secret Setup
 
 The Massive API key is stored in SSM Parameter Store as a `SecureString`.
