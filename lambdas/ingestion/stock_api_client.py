@@ -25,12 +25,12 @@ class StockApiClient:
         if not self.api_key:
             raise RuntimeError("MASSIVE_API_KEY environment variable is not set")
 
-        params = {"apiKey": self.api_key}
+        headers = {"Authorization": f"Bearer {self.api_key}"}
         url = f"https://api.massive.com/v1/open-close/{ticker}/{target_date}"
 
         logger.info(f"Fetching {ticker}")
 
-        response = self.make_request(url, params)
+        response = self.make_request(url, headers)
 
         if response.status_code != 200:
             logger.error(
@@ -44,7 +44,7 @@ class StockApiClient:
         )
         return data
 
-    def make_request(self, url: str, params: dict[str, str]) -> requests.Response:
+    def make_request(self, url: str, headers: dict[str, str]) -> requests.Response:
         attempt = 0
 
         while attempt < MAX_REQUEST_RETRIES:
@@ -53,7 +53,7 @@ class StockApiClient:
             try:
                 response = requests.get(
                     url,
-                    params=params,
+                    headers=headers,
                     timeout=(
                         REQUEST_CONNECT_TIMEOUT_SECONDS,
                         REQUEST_READ_TIMEOUT_SECONDS,
