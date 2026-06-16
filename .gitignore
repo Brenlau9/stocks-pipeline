@@ -15,6 +15,7 @@ frontend/.env
 *.tfstate.*
 terraform.tfvars
 terraform/build/
+terraform/response.json
 
 # Frontend
 frontend/node_modules/

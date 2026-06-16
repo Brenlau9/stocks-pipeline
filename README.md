@@ -200,6 +200,19 @@ terraform -chdir=terraform apply
 
 Review the Terraform plan, then approve it.
 
+## Deploy Frontend
+
+After Terraform creates the frontend S3 bucket, build and upload the static
+frontend files:
+
+```bash
+./scripts/deploy_frontend.sh
+```
+
+The script builds `frontend/dist` and syncs its contents to the S3 website
+bucket from Terraform output. It uploads `index.html` at the bucket root and
+uses `--delete` so removed build assets do not stay behind in S3.
+
 ## Useful Outputs
 
 After deploy:
@@ -213,6 +226,8 @@ Important outputs:
 - `ingestion_lambda_name`
 - `api_lambda_name`
 - `movers_endpoint_url`
+- `frontend_bucket_name`
+- `frontend_website_url`
 - `dynamodb_table_name`
 
 ## Manual Ingestion Invoke

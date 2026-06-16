@@ -33,3 +33,15 @@ output "api_gateway_url" {
 output "movers_endpoint_url" {
   value = "${aws_apigatewayv2_api.stocks_api.api_endpoint}/movers"
 }
+
+output "frontend_bucket_name" {
+  value = aws_s3_bucket.frontend_site.bucket
+}
+
+output "frontend_website_endpoint" {
+  value = aws_s3_bucket_website_configuration.frontend_site.website_endpoint
+}
+
+output "frontend_website_url" {
+  value = "http://${aws_s3_bucket_website_configuration.frontend_site.website_endpoint}"
+}
