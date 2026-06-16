@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function App() {
   const [movers, setMovers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -9,7 +11,7 @@ function App() {
   useEffect(() => {
     async function fetchMovers() {
       try {
-        const response = await fetch(import.meta.env.VITE_API_URL);
+        const response = await fetch(apiUrl);
 
         if (!response.ok) {
           throw new Error("Failed to fetch movers");
@@ -30,7 +32,6 @@ function App() {
   return (
     <main className="container">
       <h1>Daily Stock Top Movers</h1>
-      <p>Last 7 winning stocks from the watchlist.</p>
 
       {loading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
