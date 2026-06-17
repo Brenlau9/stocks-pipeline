@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_event_rule" "daily_ingestion_schedule" {
   name                = "stocks-daily-ingestion-schedule"
-  description         = "Runs the stock ingestion Lambda once per day"
-  schedule_expression = "cron(0 22 * * ? *)"
+  description         = "Runs the stock ingestion Lambda every morning for the previous trading day"
+  schedule_expression = "cron(0 14 * * ? *)"
 
   tags = {
     Project = "stocks-pipeline"

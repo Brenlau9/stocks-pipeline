@@ -3,9 +3,9 @@
 Daily stock mover ingestion pipeline built with AWS Lambda, DynamoDB, EventBridge,
 API Gateway, and Terraform.
 
-The system wakes up after market close, fetches open/close data for a fixed
-watchlist, stores the stock with the largest absolute percentage move, and
-exposes recent winners through an HTTP API.
+The system wakes up the morning after each trading day, fetches open/close data
+for a fixed watchlist, stores the stock with the largest absolute percentage
+move, and exposes recent winners through an HTTP API.
 
 ## Architecture
 
@@ -50,8 +50,8 @@ Manual invocations can pass a historical trading date:
 {"trading_date":"2026-06-12"}
 ```
 
-Scheduled invocations do not pass a date and use the most recent trading day
-based on the current date.
+Scheduled invocations do not pass a date and use the most recent completed
+trading day before the current date.
 
 ### API Lambda
 
@@ -88,11 +88,11 @@ terraform/eventbridge.tf
 Runs the ingestion Lambda once per day:
 
 ```text
-cron(0 22 * * ? *)
+cron(0 14 * * ? *)
 ```
 
-AWS cron expressions are UTC. This schedule is intended to run after US market
-close with some buffer.
+AWS cron expressions are UTC. This schedule runs in the US morning after the
+trading day, which avoids requesting same-day market data from Massive.
 
 ### API Gateway
 
@@ -232,7 +232,7 @@ Important outputs:
 
 ## Manual Ingestion Invoke
 
-Invoke the ingestion Lambda for its default trading-day behavior:
+Invoke the ingestion Lambda for its default previous-trading-day behavior:
 
 ```bash
 aws lambda invoke \
@@ -303,9 +303,10 @@ terraform -chdir=terraform validate
 
 ## Notes
 
-- If you manually invoke before market close, today's open/close endpoint may
-  require a paid Massive tier. Use the `trading_date` payload with a completed
-  historical trading day for manual testing.
+- The scheduled job looks for the most recent completed trading day before the
+  current date so it does not request same-day Massive data. Use the
+  `trading_date` payload with a completed historical trading day for manual
+  testing.
 
 - Terraform state is currently local unless you configure a remote backend.
   Do not commit `terraform.tfstate`, `terraform.tfvars`, or `.env` files.
