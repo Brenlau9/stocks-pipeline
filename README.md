@@ -281,6 +281,22 @@ Expected response shape:
 
 The API returns up to seven most recent records.
 
+## Integration Smoke Test
+
+Run a lightweight deployed-system check:
+
+```bash
+./scripts/integration_smoke_test.sh
+```
+
+This verifies Terraform outputs, `GET /movers`, the DynamoDB-backed response
+shape, and the S3 frontend website. To also invoke the ingestion Lambda for a
+completed historical trading day and verify that record through the API:
+
+```bash
+./scripts/integration_smoke_test.sh --ingest 2026-06-12
+```
+
 ## Local Validation
 
 Run Python syntax checks:
