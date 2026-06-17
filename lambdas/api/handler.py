@@ -16,6 +16,8 @@ def configure_logging() -> None:
 configure_logging()
 logger = logging.getLogger(__name__)
 
+CACHE_CONTROL_HEADER = "public, max-age=300"
+
 
 def decimal_default(obj):
     if isinstance(obj, Decimal):
@@ -39,6 +41,7 @@ def lambda_handler(event, context):
             "headers": {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
+                "Cache-Control": CACHE_CONTROL_HEADER,
             },
             "body": json.dumps(items, default=decimal_default),
         }
@@ -50,6 +53,7 @@ def lambda_handler(event, context):
             "headers": {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
+                "Cache-Control": "no-store",
             },
             "body": json.dumps({
                 "message": "Failed to retrieve recent winners"
