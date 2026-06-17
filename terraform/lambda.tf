@@ -98,7 +98,7 @@ resource "aws_iam_role_policy" "api_lambda_policy" {
       {
         Effect = "Allow"
         Action = [
-          "dynamodb:Scan"
+          "dynamodb:GetItem"
         ]
         Resource = aws_dynamodb_table.daily_stock_movers.arn
       }

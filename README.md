@@ -58,7 +58,8 @@ trading day before the current date.
 Path: `lambdas/api`
 
 The API Lambda reads from DynamoDB and returns the most recent seven winning
-stock records as JSON.
+stock records as JSON. It reads known date keys with `GetItem` instead of
+scanning the whole table.
 
 ### Shared Code
 

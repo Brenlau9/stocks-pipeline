@@ -1,10 +1,14 @@
 import logging
+from datetime import date, timedelta
 from decimal import Decimal
-from typing import Any, List
+from typing import Any
 
 import boto3
 
 logger = logging.getLogger(__name__)
+
+RECENT_WINNERS_LIMIT = 7
+RECENT_WINNERS_LOOKBACK_DAYS = 30
 
 class DynamoDBRepository:
     def __init__(self, table_name: str, region: str):
@@ -29,16 +33,29 @@ class DynamoDBRepository:
 
         logger.info("Winner saved successfully")
     
-    def get_recent_winners(self) -> List[dict]:
-        response = self.table.scan()
-
-        items = response.get("Items", [])
-
-        items.sort(
-            key=lambda x: x["date"],
-            reverse=True
+    def get_winner_by_date(self, trading_date: date) -> dict[str, Any] | None:
+        response = self.table.get_item(
+            Key={
+                "date": trading_date.isoformat(),
+            }
         )
 
-        logger.info(f"Retrieved recent winners from DynamoDB: {items[:7]}")
+        return response.get("Item")
 
-        return items[:7]
+    def get_recent_winners(self) -> list[dict[str, Any]]:
+        winners = []
+        target_date = date.today()
+
+        for _ in range(RECENT_WINNERS_LOOKBACK_DAYS):
+            item = self.get_winner_by_date(target_date)
+            if item:
+                winners.append(item)
+
+            if len(winners) == RECENT_WINNERS_LIMIT:
+                break
+
+            target_date -= timedelta(days=1)
+
+        logger.info(f"Retrieved recent winners from DynamoDB: {winners}")
+
+        return winners
