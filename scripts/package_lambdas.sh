@@ -33,6 +33,11 @@ package_lambda() {
       --target "${package_dir}" \
       -r "${requirements_file}"
   fi
+
+  find "${package_dir}" -type d -name "__pycache__" -prune -exec rm -rf {} +
+  find "${package_dir}" -type f -name "*.pyc" -delete
+  find "${package_dir}" -name "* 2*" -prune -exec rm -rf {} +
+  rm -rf "${package_dir}/bin"
 }
 
 mkdir -p "${BUILD_DIR}"
@@ -40,7 +45,7 @@ mkdir -p "${BUILD_DIR}"
 package_lambda "ingestion"
 package_lambda "api"
 
-rm -f "${BUILD_DIR}/ingestion_lambda.zip" "${BUILD_DIR}/api_lambda.zip"
+rm -f "${BUILD_DIR}"/*.zip
 
 echo "Lambda packages rebuilt in ${BUILD_DIR}."
 echo "Run: terraform -chdir=terraform apply"
